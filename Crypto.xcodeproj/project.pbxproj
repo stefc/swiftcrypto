@@ -72,7 +72,6 @@
 				C210AFE31A108DD900F16BDB /* main.swift */,
 				F82D8D8A1A1E5D7600CCE287 /* Utils.swift */,
 				F82D8D881A1E5C9D00CCE287 /* Crypto.swift */,
-				C210AFEE1A1BA58A00F16BDB /* Crypto-Bridging-Header.h */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -80,6 +79,7 @@
 		F82D8D831A1E5C0100CCE287 /* NaCl */ = {
 			isa = PBXGroup;
 			children = (
+				C210AFEE1A1BA58A00F16BDB /* Crypto-Bridging-Header.h */,
 				F82D8D861A1E5C3C00CCE287 /* hsalsa20.c */,
 				F82D8D841A1E5C2600CCE287 /* curve25519-donna-c64.c */,
 			);
