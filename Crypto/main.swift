@@ -8,12 +8,52 @@
 
 import Foundation
 
-let symbols = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-// Sequence in ein Array umwandeln
-func toArray<S : SequenceType, T where T == S.Generator.Element> (seq: S) -> [T] {
-    return Array(seq)
-}
+
+let bob = createKeyPair()
+let mary = createKeyPair()
+
+let sharedA = calcSharedSecret((bob.prv,mary.pub))
+let sharedB = calcSharedSecret((mary.prv,bob.pub))
+
+println(toHex(mary.prv))
+println(toHex(mary.pub))
+println(toHex(bob.prv))
+println(toHex(bob.pub))
+
+
+// Shared Secret between Bob's Public key and Alice's Private key
+let shared : [UInt8] = [
+    0x4a,0x5d,0x9d,0x5b,0xa4,0xce,0x2d,0xe1
+    ,0x72,0x8e,0x3b,0xf4,0x80,0x35,0x0f,0x25
+    ,0xe0,0x7e,0x21,0xc9,0x47,0xd1,0x9e,0x33
+    ,0x76,0xf0,0x9b,0x3c,0x1e,0x16,0x17,0x42]
+
+let zero = [UInt8](count:32, repeatedValue:0)
+
+let c : [UInt8] = [
+    0x65,0x78,0x70,0x61,0x6e,0x64,0x20,0x33
+    ,0x32,0x2d,0x62,0x79,0x74,0x65,0x20,0x6b]
+
+let firstkey = calcHSalsa20(zero, shared, c)
+
+println(toHex(firstkey))
+
+println()
+
+
+// Nonce ist 24 Bytes lang, wobei nur die ersten 16 Bytes in den HSalsa20 gegeben werden
+let nonceprefix : [UInt8] = [
+    0x69,0x69,0x6e,0xe9,0x55,0xb6,0x2b,0x73
+    ,0xcd,0x62,0xbd,0xa8,0x75,0xfc,0x73,0xd6]
+
+let secondkey = calcHSalsa20(nonceprefix, firstkey, c)
+
+// HSalsa20(HSalsa20(k, 0), n1);
+
+println(toHex(secondkey))
+
+
 /*
 
 extension Zip2 {
@@ -28,67 +68,6 @@ extension Zip2 {
 
 */
 
-class PowersOfTwo : SequenceType {
-    func generate() -> GeneratorOf<UInt64> {
-        var current : UInt64 = 1
-        
-        return GeneratorOf<UInt64> {
-            let ret = current
-            current *= base36
-            return ret
-        }
-    }
-}
-
-let base36 : UInt64 = 36
-
-class Factors : SequenceType {
-    private var x : UInt64
-    
-    init(x : UInt64) {
-        self.x = x
-    }
-    
-    func generate() -> GeneratorOf<Character> {
-        var current = x
-        
-        return GeneratorOf<Character> {
-            if (current == 0) {
-                return nil
-            }
-            
-            let ret = symbols[Int(current % base36)]
-            
-            current /= base36
-            return ret
-        }
-    }
-}
-
-func binarySearch<T : Comparable>(xs: [T], x : T) -> UInt64 {
-    var recurse : ((Int,Int) -> Int)!
-        recurse = {(low,high) in switch (low + high)/2 {
-            //case _ where high < low: return nil
-            case let mid where xs[mid] > x: return recurse(low, mid - 1)
-            case let mid where xs[mid] < x: return recurse(mid + 1, high)
-            case let mid: return mid
-        }}
-    return UInt64(recurse(0, xs.count-1))
-}
-
-func encodeBase36 ( x : UInt64 ) -> String
-{
-    return String(toArray(Factors(x:x)).reverse())
-}
-
-func decodeBase36 ( s : String ) -> UInt64
-{
-    let find = { x in binarySearch(symbols, x) }
-    let a = Array(s).reverse().map( find )
-    let b = PowersOfTwo()
-    println(Zip2(a,b))
-    return  map(Zip2(a,b), * ).reduce(0, +)
-}
 
 
 let key = Array<UInt8>(count: 16, repeatedValue:3)

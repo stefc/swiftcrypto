@@ -4,8 +4,6 @@
  Public domain.
  */
 
-#include "api.h"
-
 #define ROUNDS 20
 
 typedef unsigned int uint32;

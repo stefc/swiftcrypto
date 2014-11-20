@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		C210AFE41A108DD900F16BDB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C210AFE31A108DD900F16BDB /* main.swift */; };
-		C210AFF01A1BA58B00F16BDB /* salsa20.c in Sources */ = {isa = PBXBuildFile; fileRef = C210AFEF1A1BA58B00F16BDB /* salsa20.c */; };
-		C210AFF31A1CF6CA00F16BDB /* core_hsalsa20.c in Sources */ = {isa = PBXBuildFile; fileRef = C210AFF21A1CF6CA00F16BDB /* core_hsalsa20.c */; };
+		F82D8D851A1E5C2600CCE287 /* curve25519-donna-c64.c in Sources */ = {isa = PBXBuildFile; fileRef = F82D8D841A1E5C2600CCE287 /* curve25519-donna-c64.c */; };
+		F82D8D871A1E5C3C00CCE287 /* hsalsa20.c in Sources */ = {isa = PBXBuildFile; fileRef = F82D8D861A1E5C3C00CCE287 /* hsalsa20.c */; };
+		F82D8D891A1E5C9E00CCE287 /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82D8D881A1E5C9D00CCE287 /* Crypto.swift */; };
+		F82D8D8B1A1E5D7600CCE287 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82D8D8A1A1E5D7600CCE287 /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,10 +31,10 @@
 		C210AFE31A108DD900F16BDB /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C210AFED1A13332500F16BDB /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		C210AFEE1A1BA58A00F16BDB /* Crypto-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Crypto-Bridging-Header.h"; sourceTree = "<group>"; };
-		C210AFEF1A1BA58B00F16BDB /* salsa20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = salsa20.c; sourceTree = "<group>"; };
-		C210AFF11A1BA5A800F16BDB /* salsa20.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = salsa20.h; sourceTree = "<group>"; };
-		C210AFF21A1CF6CA00F16BDB /* core_hsalsa20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = core_hsalsa20.c; sourceTree = "<group>"; };
-		C210AFF41A1CF6F400F16BDB /* api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
+		F82D8D841A1E5C2600CCE287 /* curve25519-donna-c64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "curve25519-donna-c64.c"; sourceTree = "<group>"; };
+		F82D8D861A1E5C3C00CCE287 /* hsalsa20.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hsalsa20.c; sourceTree = "<group>"; };
+		F82D8D881A1E5C9D00CCE287 /* Crypto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
+		F82D8D8A1A1E5D7600CCE287 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,14 +68,22 @@
 		C210AFE21A108DD900F16BDB /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
-				C210AFEF1A1BA58B00F16BDB /* salsa20.c */,
-				C210AFF11A1BA5A800F16BDB /* salsa20.h */,
+				F82D8D831A1E5C0100CCE287 /* NaCl */,
 				C210AFE31A108DD900F16BDB /* main.swift */,
+				F82D8D8A1A1E5D7600CCE287 /* Utils.swift */,
+				F82D8D881A1E5C9D00CCE287 /* Crypto.swift */,
 				C210AFEE1A1BA58A00F16BDB /* Crypto-Bridging-Header.h */,
-				C210AFF21A1CF6CA00F16BDB /* core_hsalsa20.c */,
-				C210AFF41A1CF6F400F16BDB /* api.h */,
 			);
 			path = Crypto;
+			sourceTree = "<group>";
+		};
+		F82D8D831A1E5C0100CCE287 /* NaCl */ = {
+			isa = PBXGroup;
+			children = (
+				F82D8D861A1E5C3C00CCE287 /* hsalsa20.c */,
+				F82D8D841A1E5C2600CCE287 /* curve25519-donna-c64.c */,
+			);
+			name = NaCl;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -132,8 +142,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C210AFF31A1CF6CA00F16BDB /* core_hsalsa20.c in Sources */,
-				C210AFF01A1BA58B00F16BDB /* salsa20.c in Sources */,
+				F82D8D8B1A1E5D7600CCE287 /* Utils.swift in Sources */,
+				F82D8D891A1E5C9E00CCE287 /* Crypto.swift in Sources */,
+				F82D8D851A1E5C2600CCE287 /* curve25519-donna-c64.c in Sources */,
+				F82D8D871A1E5C3C00CCE287 /* hsalsa20.c in Sources */,
 				C210AFE41A108DD900F16BDB /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,6 +268,7 @@
 				C210AFE91A108DD900F16BDB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

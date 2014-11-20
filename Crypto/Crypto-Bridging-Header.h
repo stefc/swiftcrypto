@@ -2,8 +2,9 @@
 //  Use this file to import your target's public headers that you would like to expose to Swift.
 //
 
-#include "api.h"
 
-int crypto_core_hsalsa20(unsigned char *out, const unsigned char *in,
-                         const unsigned char *k, const unsigned char *c);
+extern void curve25519_donna(uint8_t *output, const uint8_t *secret, const uint8_t *bp);
+
+extern int crypto_core(uint8_t *out, const uint8_t *in,
+                       const uint8_t *k, const uint8_t *c );
 
