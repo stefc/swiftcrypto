@@ -7,11 +7,17 @@
 //
 
 import Foundation
+import AppKit
 
 
 // Sequence in ein Array umwandeln
 func toArray<S : SequenceType, T where T == S.Generator.Element> (seq: S) -> [T] {
     return Array(seq)
+}
+
+func toString(utf8: [UInt8]) -> String {
+    var result = NSString(bytes: utf8, length: utf8.count, encoding: NSUTF8StringEncoding)
+    return result as String
 }
 
 // Binärsuche

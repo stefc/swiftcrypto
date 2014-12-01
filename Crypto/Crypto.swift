@@ -34,12 +34,9 @@ func createPrivateKeyStd() -> [UInt8] {
 
 // Public Key für einen Privaten Key berrechnen (Elliptische Kurve 25519)
 func createPublicKey(privKey: [UInt8]) -> [UInt8] {
-    
-    var basepoint = [UInt8](count:KEY_SIZE, repeatedValue: 0)
-    basepoint[0] = 9
     var mypublic = [UInt8](count: KEY_SIZE, repeatedValue: 0)
     
-    curve25519_donna(&mypublic, privKey, basepoint)
+    crypto_scalarmult_curve25519_base(&mypublic, privKey)
     return mypublic
 }
 
@@ -48,10 +45,10 @@ func createKeyPair() -> (prv: [UInt8], pub:[UInt8]) {
     return (prv: secret, pub: createPublicKey(secret))
 }
 
-func calcSharedSecret( pair : ([UInt8], [UInt8])) -> [UInt8] {
+func calcSharedSecret( a : [UInt8],  b: [UInt8]) -> [UInt8] {
     var shared = [UInt8](count: KEY_SIZE, repeatedValue: 0)
     
-    curve25519_donna(&shared, pair.0, pair.1)
+    crypto_scalarmult_curve25519(&shared, a, b)
     return shared
 }
 
@@ -60,12 +57,12 @@ func calcHSalsa20( input: [UInt8], k:[UInt8], c:[UInt8] ) -> [UInt8] {
     var shared = [UInt8](count: KEY_SIZE, repeatedValue: 0)
     
     var output = [UInt8](count:32, repeatedValue:0)
-    crypto_core(&output, input, k, c)
+    crypto_core_hsalsa20(&output, input, k, c)
     return output
 }
 
 // Shared Secret zusätzlich encodieren mit  HSalsa20( nonce, HSalsa20( 0, secret, c), c)
-func encodeSharedSecret( sharedSecret: [UInt8] ) -> [UInt8] {
+func encodeSharedSecret( sharedSecret: [UInt8] , nonceprefix: [UInt8] ) -> [UInt8] {
     
     let zero = [UInt8](count:32, repeatedValue:0)
     
@@ -73,12 +70,34 @@ func encodeSharedSecret( sharedSecret: [UInt8] ) -> [UInt8] {
     
     let firstkey = calcHSalsa20(zero, sharedSecret, c)
     
-    
-    // Nonce ist 24 Bytes lang, wobei nur die ersten 16 Bytes in den HSalsa20 gegeben werden
-    let nonceprefix : [UInt8] = [
-        0x69,0x69,0x6e,0xe9,0x55,0xb6,0x2b,0x73
-        ,0xcd,0x62,0xbd,0xa8,0x75,0xfc,0x73,0xd6]
-    
     return calcHSalsa20(nonceprefix, firstkey, c)
 }
 
+// SHA-256 Hashcode ermitteln
+func hashSHA256( data: [UInt8] ) -> [UInt8] {
+    
+    var h = [UInt8](count:32, repeatedValue: 0)
+    
+    crypto_hash_sha256(&h, data, UInt64(data.count))
+
+    return h
+}
+
+// XSalsa20 Symetric Chiper
+func cryptXSalsa20( var message: [UInt8], sharedSecret: [UInt8], nonce: [UInt8] ) -> [UInt8] {
+    
+    crypto_stream_xsalsa20_xor(&message, message, UInt64(message.count), nonce, sharedSecret)
+    
+    return message
+}
+
+// String codieren
+func encodeXSalsa20( message: String, sharedSecret: [UInt8], nonce: [UInt8] ) -> [UInt8] {
+    return cryptXSalsa20(toArray(message.utf8), sharedSecret, nonce)
+}
+
+
+// String decodieren
+func decodeXSalsa20( message: [UInt8], sharedSecret: [UInt8], nonce: [UInt8] ) -> String {
+    return toString(cryptXSalsa20(message, sharedSecret, nonce))
+}
